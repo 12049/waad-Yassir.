@@ -220,6 +220,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .lesson-btn:hover {
@@ -227,6 +228,15 @@
             color: white;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(44, 120, 101, 0.3);
+        }
+
+        .lesson-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 0 0 10px 10px;
         }
 
         /* صفحة الفيديو */
@@ -265,12 +275,22 @@
             height: 100%;
         }
 
+        .video-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-time {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
         .quality-options {
             display: flex;
             gap: 10px;
-            margin-bottom: 1.5rem;
             flex-wrap: wrap;
-            justify-content: center;
         }
 
         .quality-btn {
@@ -558,6 +578,17 @@
             .page-title {
                 font-size: 1.8rem;
             }
+            
+            .quiz-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: center;
+            }
+            
+            .score-box {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -648,16 +679,18 @@
                     
                     <div class="video-wrapper">
                         <video id="lessonVideo" controls controlsList="nodownload">
-                            <source src="" type="video/mp4">
                             متصفحك لا يدعم تشغيل الفيديو.
                         </video>
                     </div>
                     
-                    <div class="quality-options">
-                        <button class="quality-btn active" onclick="changeQuality('240')">240p</button>
-                        <button class="quality-btn" onclick="changeQuality('360')">360p</button>
-                        <button class="quality-btn" onclick="changeQuality('480')">480p</button>
-                        <button class="quality-btn" onclick="changeQuality('720')">720p</button>
+                    <div class="video-controls">
+                        <div class="video-time" id="videoTime">00:00 / 00:00</div>
+                        <div class="quality-options">
+                            <button class="quality-btn active" onclick="changeQuality('240')">240p</button>
+                            <button class="quality-btn" onclick="changeQuality('360')">360p</button>
+                            <button class="quality-btn" onclick="changeQuality('480')">480p</button>
+                            <button class="quality-btn" onclick="changeQuality('720')">720p</button>
+                        </div>
                     </div>
                     
                     <div class="download-section">
@@ -779,214 +812,134 @@
     </footer>
 
     <script>
-        // بيانات الدروس مع روابط فيديوهات افتراضية
+        // بيانات الدروس مع ملفات فيديوهات محلية
         const lessonsData = {
             'رياضيات': [
                 { 
                     title: 'المقدمة في الرياضيات', 
-                    videoId: 'A1',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'math1',
+                    videoFile: 'videos/math1.mp4',
+                    duration: '05:30'
                 },
                 { 
                     title: 'الجبر الأساسي', 
-                    videoId: 'A2',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'math2',
+                    videoFile: 'videos/math2.mp4',
+                    duration: '07:15'
                 },
                 { 
                     title: 'المعادلات الخطية', 
-                    videoId: 'A3',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'math3',
+                    videoFile: 'videos/math3.mp4',
+                    duration: '06:45'
                 },
                 { 
                     title: 'الهندسة المستوية', 
-                    videoId: 'A4',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'math4',
+                    videoFile: 'videos/math4.mp4',
+                    duration: '08:20'
                 },
                 { 
                     title: 'حساب المثلثات', 
-                    videoId: 'A5',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الإحصاء والاحتمالات', 
-                    videoId: 'A6',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'التفاضل والتكامل', 
-                    videoId: 'A7',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'المتتاليات والمتسلسلات', 
-                    videoId: 'A8',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'التحليل العددي', 
-                    videoId: 'A9',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'المراجعة النهائية', 
-                    videoId: 'A10',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'math5',
+                    videoFile: 'videos/math5.mp4',
+                    duration: '09:10'
                 }
             ],
             'فيزياء': [
                 { 
                     title: 'المقدمة في الفيزياء', 
-                    videoId: 'B1',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'physics1',
+                    videoFile: 'videos/physics1.mp4',
+                    duration: '06:15'
                 },
                 { 
                     title: 'الميكانيكا', 
-                    videoId: 'B2',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'physics2',
+                    videoFile: 'videos/physics2.mp4',
+                    duration: '07:30'
                 },
                 { 
                     title: 'الديناميكا الحرارية', 
-                    videoId: 'B3',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'physics3',
+                    videoFile: 'videos/physics3.mp4',
+                    duration: '08:45'
                 },
                 { 
                     title: 'الكهرومغناطيسية', 
-                    videoId: 'B4',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'physics4',
+                    videoFile: 'videos/physics4.mp4',
+                    duration: '07:15'
                 },
                 { 
                     title: 'الضوء والبصريات', 
-                    videoId: 'B5',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الفيزياء الحديثة', 
-                    videoId: 'B6',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الفيزياء النووية', 
-                    videoId: 'B7',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الفيزياء الفلكية', 
-                    videoId: 'B8',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'فيزياء الكم', 
-                    videoId: 'B9',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'المراجعة النهائية', 
-                    videoId: 'B10',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'physics5',
+                    videoFile: 'videos/physics5.mp4',
+                    duration: '06:50'
                 }
             ],
             'كيمياء': [
                 { 
                     title: 'المقدمة في الكيمياء', 
-                    videoId: 'C1',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'chemistry1',
+                    videoFile: 'videos/chemistry1.mp4',
+                    duration: '05:45'
                 },
                 { 
                     title: 'الجدول الدوري', 
-                    videoId: 'C2',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'chemistry2',
+                    videoFile: 'videos/chemistry2.mp4',
+                    duration: '07:20'
                 },
                 { 
                     title: 'الروابط الكيميائية', 
-                    videoId: 'C3',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'chemistry3',
+                    videoFile: 'videos/chemistry3.mp4',
+                    duration: '06:30'
                 },
                 { 
                     title: 'التفاعلات الكيميائية', 
-                    videoId: 'C4',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'chemistry4',
+                    videoFile: 'videos/chemistry4.mp4',
+                    duration: '08:10'
                 },
                 { 
                     title: 'الكيمياء الحرارية', 
-                    videoId: 'C5',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الكيمياء العضوية', 
-                    videoId: 'C6',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الكيمياء التحليلية', 
-                    videoId: 'C7',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'الكيمياء الصناعية', 
-                    videoId: 'C8',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'كيمياء البوليمرات', 
-                    videoId: 'C9',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'المراجعة النهائية', 
-                    videoId: 'C10',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'chemistry5',
+                    videoFile: 'videos/chemistry5.mp4',
+                    duration: '07:45'
                 }
             ],
             'أحياء': [
                 { 
                     title: 'المقدمة في الأحياء', 
-                    videoId: 'D1',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'biology1',
+                    videoFile: 'videos/biology1.mp4',
+                    duration: '06:20'
                 },
                 { 
                     title: 'الخلية وتركيبها', 
-                    videoId: 'D2',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'biology2',
+                    videoFile: 'videos/biology2.mp4',
+                    duration: '07:50'
                 },
                 { 
                     title: 'علم الوراثة', 
-                    videoId: 'D3',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'biology3',
+                    videoFile: 'videos/biology3.mp4',
+                    duration: '08:15'
                 },
                 { 
                     title: 'التطور والتصنيف', 
-                    videoId: 'D4',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'biology4',
+                    videoFile: 'videos/biology4.mp4',
+                    duration: '06:45'
                 },
                 { 
                     title: 'علم البيئة', 
-                    videoId: 'D5',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'علم النبات', 
-                    videoId: 'D6',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'علم الحيوان', 
-                    videoId: 'D7',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'علم الأحياء الدقيقة', 
-                    videoId: 'D8',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'التكنولوجيا الحيوية', 
-                    videoId: 'D9',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
-                },
-                { 
-                    title: 'المراجعة النهائية', 
-                    videoId: 'D10',
-                    videoSrc: 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4'
+                    videoId: 'biology5',
+                    videoFile: 'videos/biology5.mp4',
+                    duration: '07:30'
                 }
             ]
         };
@@ -1112,6 +1065,7 @@
         let correctAnswers = 0;
         let wrongAnswers = 0;
         let selectedOption = null;
+        let userProgress = JSON.parse(localStorage.getItem('userProgress')) || {};
 
         // عناصر DOM
         const educationPage = document.getElementById('educationPage');
@@ -1123,6 +1077,7 @@
         const videoContainer = document.getElementById('videoContainer');
         const videoTitle = document.getElementById('videoTitle');
         const lessonVideo = document.getElementById('lessonVideo');
+        const videoTime = document.getElementById('videoTime');
         const testsContainer = document.getElementById('testsContainer');
         const quizContainer = document.getElementById('quizContainer');
         const questionText = document.getElementById('questionText');
@@ -1163,21 +1118,45 @@
                 const lessonBtn = document.createElement('button');
                 lessonBtn.className = 'lesson-btn';
                 lessonBtn.textContent = `الدرس ${index + 1}`;
-                lessonBtn.onclick = () => playVideo(lesson.title, lesson.videoId, lesson.videoSrc);
+                
+                // إضافة شريط التقدم إذا كان هناك تقدم مسجل
+                if (userProgress[lesson.videoId]) {
+                    const progressBar = document.createElement('div');
+                    progressBar.className = 'lesson-progress';
+                    progressBar.style.width = `${userProgress[lesson.videoId].progress}%`;
+                    lessonBtn.appendChild(progressBar);
+                }
+                
+                lessonBtn.onclick = () => playVideo(lesson.title, lesson.videoId, lesson.videoFile, lesson.duration);
                 lessonsContainer.appendChild(lessonBtn);
             });
         }
 
         // تشغيل الفيديو
-        function playVideo(title, videoId, videoSrc) {
+        function playVideo(title, videoId, videoFile, duration) {
             currentLesson = videoId;
             lessonsContainer.style.display = 'none';
             videoContainer.style.display = 'block';
             videoTitle.textContent = title;
             
             // تعيين مصدر الفيديو
-            lessonVideo.src = videoSrc;
+            lessonVideo.src = videoFile;
             lessonVideo.load();
+            
+            // تعيين وقت الفيديو إذا كان هناك تقدم مسجل
+            if (userProgress[videoId] && userProgress[videoId].currentTime) {
+                lessonVideo.currentTime = userProgress[videoId].currentTime;
+            }
+            
+            // تحديث وقت الفيديو
+            lessonVideo.addEventListener('loadedmetadata', function() {
+                updateVideoTime();
+            });
+            
+            lessonVideo.addEventListener('timeupdate', function() {
+                updateVideoTime();
+                saveVideoProgress();
+            });
             
             // إعادة تعيين خيارات الجودة
             document.querySelectorAll('.quality-btn').forEach(btn => {
@@ -1186,6 +1165,31 @@
                     btn.classList.add('active');
                 }
             });
+        }
+
+        // تحديث وقت الفيديو
+        function updateVideoTime() {
+            const currentTime = formatTime(lessonVideo.currentTime);
+            const duration = formatTime(lessonVideo.duration || 0);
+            videoTime.textContent = `${currentTime} / ${duration}`;
+        }
+
+        // تنسيق الوقت
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // حفظ تقدم الفيديو
+        function saveVideoProgress() {
+            if (!userProgress[currentLesson]) {
+                userProgress[currentLesson] = {};
+            }
+            
+            userProgress[currentLesson].currentTime = lessonVideo.currentTime;
+            userProgress[currentLesson].progress = (lessonVideo.currentTime / lessonVideo.duration) * 100 || 0;
+            localStorage.setItem('userProgress', JSON.stringify(userProgress));
         }
 
         // تغيير جودة الفيديو (وهمي في هذا المثال)
@@ -1332,6 +1336,14 @@
             quizContainer.style.display = 'none';
             testsContainer.style.display = 'grid';
         }
+
+        // تهيئة التطبيق
+        function init() {
+            showSubjects();
+        }
+
+        // تشغيل التطبيق
+        init();
     </script>
 </body>
 </html>
