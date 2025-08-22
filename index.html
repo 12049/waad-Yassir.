@@ -1098,6 +1098,7 @@
     <div class="bg-pattern"></div> 
     <div class="hero-content"> 
      <div class="hero-text text-overlay"> 
+
       <h2>مهندسة حاسوب ومطورة واجهات</h2> 
       <p>أدرس هندسة الحاسوب وأعمل كمدرسة في الجامعة، أحب تحويل الأفكار التقنية إلى واقع ملموس</p> 
       <div class="hero-btns"> <a href="#contact" class="btn">تواصل معي</a> <a href="#about" class="btn btn-outline">اعرف المزيد</a> 
@@ -1450,7 +1451,9 @@
     const dots = document.querySelectorAll('.dot');
     dots.forEach((dot, index) => {
         dot.style.animationDelay = `${index * 0.5}s`;
-دادات الدوائر
+    });
+
+    // تنشيط شريط التقدم وعدادات الدوائر
     function activateProgress() {
         // أشرطة التقدم الخطية
         const progressBars = document.querySelectorAll('.progress');
@@ -1553,4 +1556,4 @@
     });
   </script> 
  </body>
-    </html>
+</html>
